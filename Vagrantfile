@@ -27,7 +27,7 @@ Vagrant.configure(2) do |config|
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
-  config.vm.network "forwarded_port", guest: 4000, host: 8080
+  config.vm.network "forwarded_port", guest: 4000, host: 4000
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -43,7 +43,8 @@ Vagrant.configure(2) do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
-  config.vm.synced_folder ".", "/vagrant", type: "rsync"
+  config.vm.synced_folder ".", "/vagrant", type: "rsync"  
+  #config.vm.synced_folder "./myblog", "/myblog", type: "rsync"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -90,26 +91,21 @@ sudo apt-get -y install ruby2.2 ruby2.2-dev
 # 2.) Next install Jekyll
 gem install jekyll bundler
 
+# 3.) Create an empty blog
+jekyll new myblog
 
+# 3.) Finally build and run the blog
+cd myblog
+
+# Build the site on the preview server (note using host binding to 0.0.0.0 so available outside host)
+bundle exec jekyll serve -H 0.0.0.0
+
+echo "Now browse to http://localhost:4000"
 
 SCRIPT
 
 config.vm.provision "bootstrap", type: "shell" do |s|
  s.inline = $script
 end
-
-#apt-get -y install ruby ruby-dev make gcc
-#gem install jekyll bundler
-
-# apt-get ruby installs a older version of Ruby not compatable with Jekyll v3 - needs to be version 2 or higher
-#Use ruby-intsall to get the latest stable version of Ruby (e.g. 2.4) 
-# see https://github.com/postmodern/ruby-install#readme
-#wget -O ruby-install-0.6.1.tar.gz https://github.com/postmodern/ruby-install/archive/v0.6.1.tar.gz
-#tar -xzvf ruby-install-0.6.1.tar.gz
-#cd ruby-install-0.6.1/
-#make install
-#ruby-install
-
-
 
 end
